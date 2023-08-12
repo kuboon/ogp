@@ -15,17 +15,17 @@ app.get("/typistan", (c) => {
   const og = {
     title: `たいぴすたん ${title} で ${score} てん`,
     image: `/typistan.png?title=${title}&score=${score}`,
+    'image:type': 'image/png',
+    url: `https://kuboon-ogp.deno.dev/typistan?title=${title}&score=${score}&csv=${csv}`,
+    type: "website",
+    description: `たいぴすたん ${title} で ${score}てん`,
   }
-  const href = `https://typing.kbn.one/#${csv || ""}`
-  const og_url = `https://kuboon-ogp.deno.dev/typistan?title=${title}&score=${score}&csv=${csv}`
   const metas = Object.entries(og).map(([k, v]) => (
     html`
     <meta property='og:${k}' content='${v}' />
-    <meta property='og:url' content='${og_url}' />
-    <meta property="og:type" content="website" />
-    <meta property="og:description" content="たいぴすたん ${title} で ${score}てん" />
     `
   ));
+  const href = `https://typing.kbn.one/#${csv || ""}`
   return c.html(html`
     <html>
       <head>
