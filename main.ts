@@ -16,7 +16,7 @@ app.get("/typistan", (c) => {
     title: `たいぴすたん ${title} で ${score} てん`,
     image: `/typistan.png?title=${title}&score=${score}`,
     'image:type': 'image/png',
-    url: `https://kuboon-ogp.deno.dev/typistan?title=${title}&score=${score}&csv=${csv}`,
+    url: `https://ogp.kbn.one/typistan?title=${title}&score=${score}&csv=${csv}`,
     type: "website",
     description: `たいぴすたん ${title} で ${score}てん`,
   }
