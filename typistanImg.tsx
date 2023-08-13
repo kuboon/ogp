@@ -68,16 +68,27 @@ export async function typistanImg({ score, title }: Args) {
           />
         </g>
       </svg>
+      <img
+        src={img as unknown as string}
+        width={500}
+        height={500}
+        style={{
+          position: "absolute",
+          left: "650",
+          top: "160",
+        }}
+      />
       <div
         style={{
           display: "flex",
+          filter: "drop-shadow(3px 3px white)",
           flexDirection: "column",
           fontSize: "60px",
           justifyContent: "space-around",
           color: "black",
-          padding: "50px",
+          margin: "0 300px",
           position: "absolute",
-          width: "1200px",
+          width: "630px",
           height: "630px",
         }}
       >
@@ -88,22 +99,15 @@ export async function typistanImg({ score, title }: Args) {
         <div lang="ja-JP" id="title">{title}</div>
         <div>たいぴすたん</div>
       </div>
-      <img
-        src={img as unknown as string}
-        width={500}
-        height={500}
-        style={{
-          position: "absolute",
-          left: "700",
-          top: "160",
-        }}
-      />
     </div>,
     {
       fonts: [
         {
-          name: "sans serif",
-          data: await loadGoogleFont("BIZ+UDPGothic", "たいぴすたんて0123456789" + title),
+          name: "BIZ+UDPGothic",
+          data: await loadGoogleFont(
+            "BIZ+UDPGothic",
+            "たいぴすたんて0123456789" + title,
+          ),
           weight: 700,
           style: "normal",
         },
