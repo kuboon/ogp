@@ -1,12 +1,13 @@
 /** @jsxImportSource https://esm.sh/react@18.2.0 */
-import { ImageResponse } from "https://deno.land/x/og_edge@0.0.6/mod.ts";
+// import { ImageResponse } from "https://deno.land/x/og_edge@0.0.6/mod.ts";
+import { ImageResponse, loadGoogleFont } from "./og_edge.ts";
 
 type Args = {
   score: string;
   title: string;
 };
-const img = Deno.readFileSync("./typistan.png").buffer as unknown as string;
-export function typistanImg({ score, title }: Args) {
+const img = Deno.readFileSync("./typistan.png").buffer;
+export async function typistanImg({ score, title }: Args) {
   return new ImageResponse(
     <div style={{ display: "flex" }}>
       <svg
@@ -84,16 +85,29 @@ export function typistanImg({ score, title }: Args) {
           <span style={{ fontSize: "150px" }}>{score}</span>
           <span>てん</span>
         </div>
-        <div id="title">{title}</div>
+        <div lang="ja-JP" id="title">{title}</div>
         <div>たいぴすたん</div>
       </div>
-      <img src={img} width={500} height={500} style={{
-        position: "absolute",
-        left: "700",
-        top: "160",
-      }} />
+      <img
+        src={img as unknown as string}
+        width={500}
+        height={500}
+        style={{
+          position: "absolute",
+          left: "700",
+          top: "160",
+        }}
+      />
     </div>,
     {
+      fonts: [
+        {
+          name: "sans serif",
+          data: await loadGoogleFont("BIZ+UDPGothic", "たいぴすたんて0123456789" + title),
+          weight: 700,
+          style: "normal",
+        },
+      ],
       debug: false,
     },
   );
