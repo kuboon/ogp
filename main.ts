@@ -4,6 +4,7 @@ import { typistanImg } from "./typistanImg.tsx";
 
 const app = new Hono();
 
+const Root = 'https://ogp.kbn.one'
 type Query = {
   score: string;
   title: string;
@@ -14,9 +15,9 @@ app.get("/typistan", (c) => {
   const {score, title, csv} = c.req.query() as Query;
   const og = {
     title: `たいぴすたん ${title} で ${score} てん`,
-    image: `/typistan.png?title=${title}&score=${score}`,
+    image: `${Root}/typistan.png?title=${title}&score=${score}`,
     'image:type': 'image/png',
-    url: `https://ogp.kbn.one/typistan?title=${title}&score=${score}&csv=${csv}`,
+    url: `${Root}/typistan?title=${title}&score=${score}&csv=${csv}`,
     type: "website",
     description: `たいぴすたん ${title} で ${score}てん`,
   }
