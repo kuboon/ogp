@@ -6,23 +6,31 @@ const app = new Hono();
 
 type Query = {
   score: string;
-  title: string;
-  csv: string;
+  title?: string;
+  csv?: string;
 };
+function parseEmptyToUndef(s: string | undefined) {
+  if (typeof s != 'string' || s.trim() == '') return undefined;
+  return s;
+}
+function buildQueryStrings(q: Query) {
+  return Object.entries(q).filter(([_k, v]) => v).map(([k, v]) => `${k}=${v}`).join('&');
+}
 
 app.get("/typistan", (c) => {
   const base = new URL(c.req.url).origin
-  const { score, title: title_, csv } = c.req.query() as Query;
-  if (!score || score === "0") return c.notFound();
-
-  const title = (!title_ || title_ == '') ? null : title_;
+  const q = c.req.query() as Query;
+  const { score } = q;
+  if (!(parseInt(score) > 0)) return c.notFound();
+  const title = parseEmptyToUndef(q.title);
+  const csv = parseEmptyToUndef(q.csv);
   const og = {
     title: `たいぴすたん${title ? ` ${title} ` : ''}で ${score} てん`,
-    image: `${base}/typistan.png?score=${score}` + (title ? `&title=${title}` : ''),
-    'image:type': 'image/png',
-    url: `${base}/typistan?score=${score}&title=${title}&&csv=${csv}`,
+    url: `${base}/typistan?${buildQueryStrings({ score, title, csv })}`,
     type: "website",
     description: `たいぴすたん で たいぴんぐ ちゃれんじ！`,
+    image: `${base}/typistan.png?${buildQueryStrings({ score, title })}`,
+    'image:type': 'image/png',
   }
   const metas = Object.entries(og).map(([k, v]) => (
     html`<meta property='og:${k}' content='${v}' />
@@ -30,6 +38,7 @@ app.get("/typistan", (c) => {
   ));
   const href = `https://typing.kbn.one/#${csv || ""}`
   return c.html(html`
+    <!DOCTYPE html>
     <html>
       <head>
         <meta charset='utf-8' />
@@ -47,7 +56,7 @@ app.get("/typistan", (c) => {
 });
 app.get("/typistan.png", (c) => {
   const { score, title } = c.req.query() as Query;
-  return typistanImg({ score, title });
+  return typistanImg({ score, title: title || '' });
 });
 
 Deno.serve(app.fetch);
