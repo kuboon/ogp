@@ -8,6 +8,8 @@ type Query = {
   score: string;
   title?: string;
   csv?: string;
+  fetch?: string;
+  v?: string;
 };
 function parseEmptyToUndef(s: string | undefined) {
   if (typeof s != 'string' || s.trim() == '') return undefined;
@@ -23,7 +25,7 @@ app.get("/typistan", (c) => {
   const { score } = q;
   if (!(parseInt(score) > 0)) return c.notFound();
   const title = parseEmptyToUndef(q.title);
-  const csv = parseEmptyToUndef(q.csv);
+  const csv = parseEmptyToUndef(q.fetch || q.csv);
   const og = {
     title: `たいぴすたん${title ? ` ${title} ` : ''}で ${score} てん`,
     url: `${base}/typistan?${buildQueryStrings({ score, title, csv })}`,
@@ -36,7 +38,7 @@ app.get("/typistan", (c) => {
     html`<meta property='og:${k}' content='${v}' />
     `
   ));
-  const href = `https://typing.kbn.one/#${csv || ""}`
+  const href = `https://typing.kbn.one/#v=2&fetch=${csv || ""}`
   return c.html(html`
     <!DOCTYPE html>
     <html>
