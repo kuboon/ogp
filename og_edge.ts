@@ -221,7 +221,7 @@ export class ImageResponse extends Response {
             },
           });
 
-          controller.enqueue(resvgJS.render());
+          controller.enqueue(resvgJS.render().asPng());
           controller.close();
         } catch (e) {
           console.error('error in og-edge', e);
