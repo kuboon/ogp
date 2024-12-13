@@ -4,15 +4,15 @@ import type { ReactNode } from "https://esm.sh/react@18.2.0";
 import type { SatoriOptions } from "https://esm.sh/satori@0.10.3";
 
 import satori, { init as initSatori } from "https://esm.sh/satori@0.10.3/wasm";
-import { initStreaming } from "https://esm.sh/yoga-wasm-web@0.3.0";
+import { initStreaming, type Yoga } from "https://esm.sh/yoga-wasm-web@0.3.3";
 
 import {
   initWasm,
   Resvg,
-} from "https://esm.sh/@resvg/resvg-wasm@2.0.0-alpha.4";
+} from "https://esm.sh/@resvg/resvg-wasm@2.6.2";
 import { EmojiType, getIconCode, loadEmoji } from "https://deno.land/x/og_edge@0.0.6/emoji.ts";
 
-import { encode as base64encode } from "https://deno.land/std@0.198.0/encoding/base64.ts";
+import { encodeBase64 } from "@std/encoding/base64";
 
 declare module "https://esm.sh/react@18.2.0" {
   interface HTMLAttributes<T> {
@@ -32,16 +32,16 @@ declare module "https://esm.sh/react@18.2.0" {
 }
 
 const resvg_wasm = fetch(
-  "https://cdn.jsdelivr.net/npm/@vercel/og@0.1.0/vendor/resvg.simd.wasm",
+  "https://esm.sh/@resvg/resvg-wasm@2.6.2/index_bg.wasm",
 ).then((res) => res.arrayBuffer());
 
 const yoga_wasm = fetch(
-  "https://cdn.jsdelivr.net/npm/@vercel/og@0.1.0/vendor/yoga.wasm",
+  "https://esm.sh/yoga-wasm-web@0.3.3/dist/yoga.wasm",
 );
 
 const initializedResvg = initWasm(resvg_wasm);
 const initializedYoga = initStreaming(yoga_wasm).then((yoga: unknown) =>
-  initSatori(yoga)
+  initSatori(yoga as Yoga)
 );
 
 const isDev = Boolean(Deno.env.get("NETLIFY_LOCAL"));
@@ -143,7 +143,7 @@ const loadDynamicAsset = ({ emoji }: { emoji?: EmojiType }) => {
   ): Promise<Asset | undefined> => {
     if (code === "emoji") {
       // It's an emoji, load the image.
-      const b64 = await loadEmoji(getIconCode(text), emoji).then(x=>x.arrayBuffer()).then(base64encode)
+      const b64 = await loadEmoji(getIconCode(text), emoji).then(x=>x.arrayBuffer()).then(encodeBase64)
       return (`data:image/svg+xml;base64,${b64}`);
     }
 
@@ -210,7 +210,7 @@ export class ImageResponse extends Response {
             ],
             loadAdditionalAsset: loadDynamicAsset({
               emoji: extendedOptions.emoji,
-            }),
+            }) as SatoriOptions["loadAdditionalAsset"],
           });
           // console.log(svg);
 

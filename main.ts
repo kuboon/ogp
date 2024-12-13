@@ -1,5 +1,5 @@
-import { Hono } from "https://deno.land/x/hono@v3.3.4/mod.ts";
-import { html } from "https://deno.land/x/hono@v3.3.4/middleware.ts";
+import { Hono } from "@hono/hono";
+import { html } from "@hono/hono/html";
 import { typistanImg } from "./typistanImg.tsx";
 
 const app = new Hono();
